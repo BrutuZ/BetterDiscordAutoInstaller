@@ -124,7 +124,7 @@ def main():
 
         plugins_list = [plugins.PluginInfo.from_url(plugin) for plugin in config.INSTALL_PLUGINS]
         for plugin_info in plugins_list:
-            logger.info(f"Checking plugin {plugin_info.get_name()} ...")
+            logger.info(f"Checking plugin {plugin_info.get_name()}...")
             plugins.download_plugin(plugin_info)
         logger.info("")
 
