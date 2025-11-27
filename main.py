@@ -8,20 +8,15 @@ import config
 import plugins
 from startup_manager import main as startup_manager
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(message)s")
-if not sys.stdout:
-    formatter = logging.Formatter("%(asctime)s %(message)s")
-    file_handler = logging.FileHandler(
-        mode="w",
-        filename=os.path.join(
-            os.path.dirname(config.SETTINGS_PATH),
-            "bdai.log"
-        )
-    )
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+LOG_FORMAT = "%(asctime)s\t%(name)s\t%(message)s"
+logger = logging.getLogger('bdai')
+logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+formatter = logging.Formatter(LOG_FORMAT)
+file_handler = logging.FileHandler(mode="w", filename=os.path.join(os.path.dirname(config.SETTINGS_PATH), "bdai.log"))
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
 
 def main():
     config.load_settings()

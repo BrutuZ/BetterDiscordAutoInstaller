@@ -8,15 +8,15 @@ import subprocess
 import requests
 
 import config
+from main import LOG_FORMAT
 from utils import backslash_path, is_version_greater, check_for_bdai_updates
 
-logger = logging.getLogger(__name__)
-formatter = logging.Formatter("%(asctime)s %(message)s")
+logger = logging.getLogger(os.path.basename(__file__).removesuffix('.py'))
 UPDATED_FILENAME = "updated"
 
 
 def get_log_file_path() -> str:
-    return os.path.join(os.path.dirname(get_updater_path()), "updater.log")
+    return os.path.join(os.path.dirname(config.SETTINGS_PATH), "bdai-updater.log")
 
 
 def setup_logging():
@@ -24,6 +24,7 @@ def setup_logging():
     logger.propagate = False
 
     if not logger.handlers:
+        formatter = logging.Formatter(LOG_FORMAT)
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
         console_handler.setFormatter(formatter)

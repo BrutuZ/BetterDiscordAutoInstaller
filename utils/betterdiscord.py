@@ -7,8 +7,7 @@ import requests
 import config
 import utils
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(message)s")
+logger = logging.getLogger(os.path.basename(__file__).removesuffix('.py'))
 
 
 def get_asar_path(is_ci: bool) -> str:

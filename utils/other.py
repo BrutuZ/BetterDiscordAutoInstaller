@@ -1,7 +1,6 @@
 import logging
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(message)s")
+logger = logging.getLogger()
 
 
 def backslash_path(path: str) -> str:

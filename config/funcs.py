@@ -6,8 +6,7 @@ from typing import Optional
 
 import config
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(message)s")
+logger = logging.getLogger()
 
 
 def load_settings():

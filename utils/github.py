@@ -9,8 +9,7 @@ import requests
 
 import config
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(message)s")
+logger = logging.getLogger(os.path.basename(__file__).removesuffix('.py'))
 
 
 @dataclass

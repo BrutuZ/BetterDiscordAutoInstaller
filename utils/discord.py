@@ -6,8 +6,7 @@ import psutil
 
 import config
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(message)s")
+logger = logging.getLogger(os.path.basename(__file__).removesuffix('.py'))
 
 
 def get_log_file_path(edition: config.DiscordEdition) -> str:

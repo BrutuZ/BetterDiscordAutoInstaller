@@ -7,8 +7,7 @@ import requests
 
 import config
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(message)s")
+logger = logging.getLogger(os.path.basename(__file__).removesuffix('.py'))
 
 
 def is_version_greater(first_version: str, second_version: str) -> bool:
@@ -60,4 +59,4 @@ def run_updater():
         os.chdir("../")
     else:
         updater_run_command = [sys.executable, "updater.py"]
-    subprocess.run(updater_run_command)
+    subprocess.run(updater_run_command, capture_output=True)
