@@ -6,7 +6,7 @@ from typing import Optional
 
 import config
 
-logger = logging.getLogger()
+logger = logging.getLogger("config")
 
 
 def load_settings():
@@ -33,11 +33,19 @@ def load_settings():
 
         # BD & Discord cached data
         config.DISABLE_DISCORD_VERSION_CHECKING = settings.get("disable_version_check", config.DISABLE_DISCORD_VERSION_CHECKING)
-        config.LAST_INSTALLED_DISCORD_VERSION = settings.get("last_installed_discord_version", config.LAST_INSTALLED_DISCORD_VERSION)
-        config.LAST_INSTALLED_DISCORD_CANARY_VERSION = settings.get("last_installed_discord_canary_version", config.LAST_INSTALLED_DISCORD_CANARY_VERSION)
-        config.LAST_INSTALLED_DISCORD_PTB_VERSION = settings.get("last_installed_discord_ptb_version", config.LAST_INSTALLED_DISCORD_PTB_VERSION)
+        config.LAST_INSTALLED_DISCORD_VERSION = settings.get(
+            "last_installed_discord_version", config.LAST_INSTALLED_DISCORD_VERSION
+        )
+        config.LAST_INSTALLED_DISCORD_CANARY_VERSION = settings.get(
+            "last_installed_discord_canary_version", config.LAST_INSTALLED_DISCORD_CANARY_VERSION
+        )
+        config.LAST_INSTALLED_DISCORD_PTB_VERSION = settings.get(
+            "last_installed_discord_ptb_version", config.LAST_INSTALLED_DISCORD_PTB_VERSION
+        )
         config.LAST_INSTALLED_BD_VERSION = settings.get("last_installed_betterdiscord_version", config.LAST_INSTALLED_BD_VERSION)
-        config.LAST_INSTALLED_BD_CI_VERSION = settings.get("last_installed_betterdiscord_ci_version", config.LAST_INSTALLED_BD_CI_VERSION)
+        config.LAST_INSTALLED_BD_CI_VERSION = settings.get(
+            "last_installed_betterdiscord_ci_version", config.LAST_INSTALLED_BD_CI_VERSION
+        )
 
 
 # noinspection PyTypeChecker
@@ -55,7 +63,6 @@ def dump_settings():
                 "workflow_runs_limit": config.WORKFLOW_RUNS_LIMIT,
                 "rerun_discord_edition": config.RERUN_DISCORD_EDITION,
                 "install_plugins": config.INSTALL_PLUGINS,
-
                 # BD & Discord cached data
                 "disable_version_check": config.DISABLE_DISCORD_VERSION_CHECKING,
                 "last_installed_discord_version": config.LAST_INSTALLED_DISCORD_VERSION,

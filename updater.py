@@ -11,7 +11,7 @@ import config
 from main import LOG_FORMAT
 from utils import backslash_path, is_version_greater, check_for_bdai_updates
 
-logger = logging.getLogger(os.path.basename(__file__).removesuffix('.py'))
+logger = logging.getLogger(os.path.basename(__file__).removesuffix(".py"))
 UPDATED_FILENAME = "updated"
 
 
@@ -46,7 +46,9 @@ def download_file(url: str, save_path: str):
     try:
         response = requests.get(url)
         if response.status_code != 200:
-            logger.error(f"Failed to download file from {url}. HTTP status code: {response.status_code}")
+            logger.error(
+                f"Failed to download file from {url}. HTTP status code: {response.status_code}"
+            )
             sys.exit(1)
 
         with open(save_path, "wb") as plugin_file:
@@ -64,12 +66,18 @@ def clean_folder(path: str, exclude_files: tuple = ()):
         file_path = os.path.abspath(os.path.join(path, file))
 
         try:
-            os.remove(file_path) if os.path.isfile(file_path) else shutil.rmtree(file_path)
+            os.remove(file_path) if os.path.isfile(file_path) else shutil.rmtree(
+                file_path
+            )
         except Exception as e:
             logger.error(f"An error occurred while cleaning the {path}: {e}")
 
 
-def extract_zip(zip_instance: zipfile.ZipFile, target_directory: str, exclude_files: tuple[str, ...] = ()):
+def extract_zip(
+    zip_instance: zipfile.ZipFile,
+    target_directory: str,
+    exclude_files: tuple[str, ...] = (),
+):
     for zip_file in zip_instance.filelist:
         if zip_file.is_dir():
             continue
@@ -92,14 +100,20 @@ def extract_zip(zip_instance: zipfile.ZipFile, target_directory: str, exclude_fi
             with open(target_path, "wb") as target_file:
                 target_file.write(file_content)
         except Exception as e:
-            logger.error(f"An error occurred while extracting {target_filename}: {e}. Skipping this file...")
+            logger.error(
+                f"An error occurred while extracting {target_filename}: {e}. Skipping this file..."
+            )
 
 
 def run_bdai():
     logger.info("Running BDAI...")
 
     if getattr(sys, "frozen", False):
-        all_bdai_dirs = [i.lstrip("v") for i in os.listdir() if i.startswith("v") and "main.exe" in os.listdir(i)]
+        all_bdai_dirs = [
+            i.lstrip("v")
+            for i in os.listdir()
+            if i.startswith("v") and "main.exe" in os.listdir(i)
+        ]
         greatest_version = "0"
 
         if not all_bdai_dirs:
@@ -119,11 +133,8 @@ def run_bdai():
 
 
 def exception_hook(exc_type, exc_value, exc_traceback):
-   logging.error(
-       "Uncaught exception",
-       exc_info=(exc_type, exc_value, exc_traceback)
-   )
-   sys.exit(0)
+    logging.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+    sys.exit(0)
 
 
 def get_updater_path() -> str:
@@ -137,7 +148,7 @@ def is_this_instance_replica() -> bool:
 def get_new_instance_filename() -> str:
     return os.path.join(
         os.path.split(get_updater_path())[0],
-        "updater.exe" if is_this_instance_replica() else "updater.old.exe"
+        "updater.exe" if is_this_instance_replica() else "updater.old.exe",
     )
 
 
@@ -167,19 +178,24 @@ def main():
             run_bdai()
             sys.exit(0)
 
-    release_url = requests.head(config.BDAI_LATEST_RELEASE_PAGE_URL, allow_redirects=True).url
+    release_url = requests.head(
+        config.BDAI_LATEST_RELEASE_PAGE_URL, allow_redirects=True
+    ).url
     latest_version = release_url.split("/")[-1]
     extract_directory = "./"
 
     if is_frozen:
         if not is_this_instance_replica():
-            logger.info("Copy to updater.old.exe and run it to unlock the updater.exe file")
+            logger.info(
+                "Copy to updater.old.exe and run it to unlock the updater.exe file"
+            )
             new_updater_path = get_new_instance_filename()
             shutil.copy(get_updater_path(), new_updater_path)
             subprocess.Popen(
                 [new_updater_path] + sys.argv[1:],
-                creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
-                close_fds=True
+                creationflags=subprocess.DETACHED_PROCESS
+                | subprocess.CREATE_NEW_PROCESS_GROUP,
+                close_fds=True,
             )
             sys.exit(0)
 
@@ -187,7 +203,9 @@ def main():
         update_package_url = config.BDAI_RELEASE_URL_TEMPLATE.format(tag=latest_version)
     else:
         save_path = f"{latest_version}.zip"
-        update_package_url = config.BDAI_RAW_RELEASE_URL_TEMPLATE.format(tag=latest_version)
+        update_package_url = config.BDAI_RAW_RELEASE_URL_TEMPLATE.format(
+            tag=latest_version
+        )
 
     if not skip_download_flag:
         logger.info("Downloading update package...")
@@ -198,7 +216,15 @@ def main():
 
     if is_frozen and os.path.exists(extract_directory):
         logger.info("Clearing target directory...")
-        clean_folder(extract_directory, exclude_files=("updater.old.exe", "settings.json", save_path, "updater.log"))
+        clean_folder(
+            extract_directory,
+            exclude_files=(
+                "updater.old.exe",
+                "settings.json",
+                save_path,
+                "updater.log",
+            ),
+        )
 
     logger.info("Unpacking...")
     extract_zip(update_package, extract_directory)
@@ -215,7 +241,7 @@ def main():
     subprocess.Popen(
         get_new_instance_filename(),
         creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
-        close_fds=True
+        close_fds=True,
     )
     sys.exit(0)
 

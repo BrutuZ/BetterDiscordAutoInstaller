@@ -3,11 +3,11 @@ name = "bdai"
 dynamic = ["version"]
 description = "BetterDiscordAutoInstaller automatically updates Discord, launches it and applies BetterDiscord"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
-    "psutil~=5.9.7",
+    "psutil~=5.9",
     "pywin32>=310 ; sys_platform == 'win32'",
-    "requests~=2.32.3",
+    "requests~=2.32",
 ]
 [dependency-groups]
 dev = ["cx-freeze>=8.3.0", "types-pywin32>=310 ; sys_platform == 'win32'"]
@@ -25,4 +25,8 @@ build-backend = "hatchling.build"
 packages = ["."]
 [tool.hatch.version]
 path = "config/constants.py"
-pattern = 'BDAI_SCRIPT_VERSION = "(?P<version>[^"]+)"'
+pattern = 'BDAI_SCRIPT_VERSION = "(?P<version>[\d.]+)'
+[tool.uv]
+package = true
+[tool.ruff]
+indent-width = 4

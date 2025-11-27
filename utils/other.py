@@ -1,6 +1,6 @@
 import logging
 
-logger = logging.getLogger()
+logger = logging.getLogger("other")
 
 
 def backslash_path(path: str) -> str:

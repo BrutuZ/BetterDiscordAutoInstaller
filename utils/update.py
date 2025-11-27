@@ -7,7 +7,7 @@ import requests
 
 import config
 
-logger = logging.getLogger(os.path.basename(__file__).removesuffix('.py'))
+logger = logging.getLogger(os.path.basename(__file__).removesuffix(".py"))
 
 
 def is_version_greater(first_version: str, second_version: str) -> bool:
@@ -15,8 +15,8 @@ def is_version_greater(first_version: str, second_version: str) -> bool:
     second = second_version.split(".")
 
     try:
-        first = list(map(lambda i: int(i), first))
-        second = list(map(lambda i: int(i), second))
+        first = [int(i) for i in first]
+        second = [int(i) for i in second]
     except ValueError:
         print("One of the versions does not match the n.n.n-like version template")
         return False
@@ -29,7 +29,7 @@ def is_version_greater(first_version: str, second_version: str) -> bool:
     for first_version_number, second_version_number in zip(first, second):
         if first_version_number > second_version_number:
             return True
-        elif second_version_number > first_version_number:
+        if second_version_number > first_version_number:
             return False
     return False
 
@@ -37,11 +37,15 @@ def is_version_greater(first_version: str, second_version: str) -> bool:
 def check_for_bdai_updates() -> bool:
     """Checks for updates and return True if there is an available update, False otherwise"""
 
-    latest_release_url = requests.head(config.BDAI_LATEST_RELEASE_PAGE_URL, allow_redirects=True)
+    latest_release_url = requests.head(
+        config.BDAI_LATEST_RELEASE_PAGE_URL, allow_redirects=True
+    )
     latest_available_version = latest_release_url.url.split("/")[-1].lstrip("v")
 
     if is_version_greater(latest_available_version, config.BDAI_SCRIPT_VERSION):
-        logger.info(f"A new version available ({config.BDAI_SCRIPT_VERSION} -> {latest_available_version}).")
+        logger.info(
+            f"A new version available ({config.BDAI_SCRIPT_VERSION} -> {latest_available_version})."
+        )
 
         if config.DISABLE_BDAI_AUTOUPDATE:
             logger.info(f"To update, go to {config.BDAI_LATEST_RELEASE_PAGE_URL}\n")

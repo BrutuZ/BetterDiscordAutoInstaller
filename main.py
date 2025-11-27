@@ -9,7 +9,7 @@ import plugins
 from startup_manager import main as startup_manager
 
 LOG_FORMAT = "%(asctime)s\t%(name)s\t%(message)s"
-logger = logging.getLogger('bdai')
+logger = logging.getLogger("bdai")
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 formatter = logging.Formatter(LOG_FORMAT)
 file_handler = logging.FileHandler(mode="w", filename=os.path.join(os.path.dirname(config.SETTINGS_PATH), "bdai.log"))
@@ -88,13 +88,7 @@ def main():
         is_last_patch_is_up_to_date = discord_core_folder == config.get_last_installed_discord_version(discord_edition)
         is_bd_injected_already = utils.is_bd_injected(discord_path, config.USE_BD_CI_RELEASES)
 
-        if (
-                not is_last_patch_is_up_to_date
-                or not is_bd_injected_already
-                or bd_has_updates
-                or force_update_flag
-        ):
-            logger.info("")
+        if not is_last_patch_is_up_to_date or not is_bd_injected_already or bd_has_updates or force_update_flag:
             logger.info(f"Killing any running {discord_edition} processes...")
             utils.kill_discord(discord_edition)
             time.sleep(2)

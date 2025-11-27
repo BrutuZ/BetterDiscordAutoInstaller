@@ -7,11 +7,13 @@ import requests
 import config
 import utils
 
-logger = logging.getLogger(os.path.basename(__file__).removesuffix('.py'))
+logger = logging.getLogger(os.path.basename(__file__).removesuffix(".py"))
 
 
 def get_asar_path(is_ci: bool) -> str:
-    return utils.backslash_path(config.BD_CI_ASAR_PATH if is_ci else config.BD_ASAR_PATH)
+    return utils.backslash_path(
+        config.BD_CI_ASAR_PATH if is_ci else config.BD_ASAR_PATH
+    )
 
 
 def get_require_line(is_ci: bool) -> str:
@@ -23,11 +25,15 @@ def get_release_tag(is_ci: bool) -> str:
 
 
 def is_bd_injected(discord_path: str, is_ci: bool) -> bool:
-    core_path_pattern = os.path.join(discord_path, "modules/discord_desktop_core-*/discord_desktop_core")
+    core_path_pattern = os.path.join(
+        discord_path, "modules/discord_desktop_core-*/discord_desktop_core"
+    )
     core_paths = glob.glob(core_path_pattern)
 
     if not core_paths:
-        logger.warning("Discord core path not found when checking BetterDiscord injection.")
+        logger.warning(
+            "Discord core path not found when checking BetterDiscord injection."
+        )
         return False
 
     index_js_path = os.path.join(core_paths[0], "index.js")
@@ -67,11 +73,15 @@ def update_bd_asar_only(is_ci: bool):
 
 
 def inject_patch(discord_path: str, is_ci: bool):
-    core_path_pattern = os.path.join(discord_path, "modules/discord_desktop_core-*/discord_desktop_core")
+    core_path_pattern = os.path.join(
+        discord_path, "modules/discord_desktop_core-*/discord_desktop_core"
+    )
     core_paths = glob.glob(core_path_pattern)
 
     if not core_paths:
-        raise FileNotFoundError(f"No matching discord_desktop_core-* folder found in: {discord_path}")
+        raise FileNotFoundError(
+            f"No matching discord_desktop_core-* folder found in: {discord_path}"
+        )
 
     index_js_path = os.path.join(core_paths[0], "index.js")
 
@@ -101,36 +111,51 @@ def inject_patch(discord_path: str, is_ci: bool):
 
 def fetch_latest_bd_release() -> str:
     logger.info("Fetching latest BetterDiscord Stable version.")
-    latest_release_url = requests.head(config.BD_LATEST_RELEASE_PAGE_URL, allow_redirects=True)
+    latest_release_url = requests.head(
+        config.BD_LATEST_RELEASE_PAGE_URL, allow_redirects=True
+    )
     return latest_release_url.url.split("/")[-1]
 
 
 def check_for_bd_updates(is_ci: bool) -> bool:
     """Checks for updates and return True if there is an available update, False otherwise"""
     logger.info("Checking for BetterDiscord updates...")
-    return check_for_bd_ci_updates() if is_ci else fetch_latest_bd_release() != config.LAST_INSTALLED_BD_VERSION
+    return (
+        check_for_bd_ci_updates()
+        if is_ci
+        else fetch_latest_bd_release() != config.LAST_INSTALLED_BD_VERSION
+    )
 
 
 def check_for_bd_ci_updates() -> bool:
     """Checks for updates and return True if there is an available update, False otherwise"""
-    return utils.get_artifacts_from_successful_run(
-        config.BD_CI_WORKFLOWS_RUNS_URL,
-        config.BD_CI_WORKFLOW_REPO,
-        config.BD_CI_WORKFLOW_AUTHOR
-    ).run_id != config.LAST_INSTALLED_BD_CI_VERSION
+    return (
+        utils.get_artifacts_from_successful_run(
+            config.BD_CI_WORKFLOWS_RUNS_URL,
+            config.BD_CI_WORKFLOW_REPO,
+            config.BD_CI_WORKFLOW_AUTHOR,
+        ).run_id
+        != config.LAST_INSTALLED_BD_CI_VERSION
+    )
 
 
 def update_bd_ci_asar() -> bool:
     """Updates BD CI and returns False if there is any error, True otherwise"""
 
-    release_meta = utils.get_artifacts_from_successful_run(config.BD_CI_WORKFLOWS_RUNS_URL, config.BD_CI_WORKFLOW_REPO, config.BD_CI_WORKFLOW_AUTHOR)
+    release_meta = utils.get_artifacts_from_successful_run(
+        config.BD_CI_WORKFLOWS_RUNS_URL,
+        config.BD_CI_WORKFLOW_REPO,
+        config.BD_CI_WORKFLOW_AUTHOR,
+    )
     if not release_meta:
         logger.info(f"Failed to fetch BetterDiscord CI artifacts from workflow run.")
         return False
 
     artifact = utils.find_artefact(release_meta.artifacts)
     if not artifact:
-        logger.info(f"Failed to find BetterDiscord CI artifact ({release_meta.run_id}).")
+        logger.info(
+            f"Failed to find BetterDiscord CI artifact ({release_meta.run_id})."
+        )
         return False
 
     success = utils.download_artifact(artifact)

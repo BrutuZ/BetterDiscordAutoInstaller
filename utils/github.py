@@ -9,7 +9,7 @@ import requests
 
 import config
 
-logger = logging.getLogger(os.path.basename(__file__).removesuffix('.py'))
+logger = logging.getLogger(os.path.basename(__file__).removesuffix(".py"))
 
 
 @dataclass
@@ -36,7 +36,7 @@ def get_headers():
 
     return {
         "Accept": "application/vnd.github+json",
-        "Authorization": f"Bearer {config.GITHUB_TOKEN}"
+        "Authorization": f"Bearer {config.GITHUB_TOKEN}",
     }
 
 
@@ -44,7 +44,10 @@ def get_artifacts_from_workflow(repo: str, author: str, run_id: str) -> Optional
     logger.info(f"Trying to get artifacts from {author} run (id: {run_id})...")
 
     try:
-        arts_resp = requests.get(f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts", headers=get_headers())
+        arts_resp = requests.get(
+            f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts",
+            headers=get_headers(),
+        )
         arts_resp.raise_for_status()
         return arts_resp.json()["artifacts"]
     except Exception as e:
@@ -53,16 +56,17 @@ def get_artifacts_from_workflow(repo: str, author: str, run_id: str) -> Optional
 
 
 def get_artifacts_from_successful_run(
-        workflows_url: str,
-        repo: str,
-        workflow_author: str,
-        runs_limit: int = None
+    workflows_url: str, repo: str, workflow_author: str, runs_limit: int = None
 ) -> Optional[BetterDiscordCIMeta]:
     runs_limit = runs_limit if runs_limit else config.WORKFLOW_RUNS_LIMIT
-    logger.info(f"Trying to get last {runs_limit} workflow runs from {workflow_author}...")
+    logger.info(
+        f"Trying to get last {runs_limit} workflow runs from {workflow_author}..."
+    )
 
     try:
-        runs_resp = requests.get(workflows_url, headers=get_headers() | {"per_page": str(runs_limit)})
+        runs_resp = requests.get(
+            workflows_url, headers=get_headers() | {"per_page": str(runs_limit)}
+        )
         runs_resp.raise_for_status()
         workflow_runs = runs_resp.json()["workflow_runs"][:runs_limit]
 
@@ -79,7 +83,9 @@ def get_artifacts_from_successful_run(
             if artifacts:
                 return BetterDiscordCIMeta(run_id, artifacts)
         else:
-            logger.warning(f"No successful runs with artifacts in latest {runs_limit} {workflow_author} builds.")
+            logger.warning(
+                f"No successful runs with artifacts in latest {runs_limit} {workflow_author} builds."
+            )
             return None
     except Exception as e:
         logger.error(str(e), exc_info=e)
@@ -114,7 +120,10 @@ def download_artifact(artifact: dict) -> bool:
         return True
 
     except requests.exceptions.HTTPError as e:
-        logger.error("Failed to download BetterDiscord CI asar: Invalid github token.", exc_info=e)
+        logger.error(
+            "Failed to download BetterDiscord CI asar: Invalid github token.",
+            exc_info=e,
+        )
         request_github_token()
 
         if input("Retry download? (y/n): ") == "y":

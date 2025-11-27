@@ -8,11 +8,7 @@ import config
 
 def main():
     if os.name != "nt":
-        input(
-            "Your system is not supported to use this script\n"
-            "\n"
-            "Press ENTER to exit."
-        )
+        input("Your system is not supported to use this script\n\nPress ENTER to exit.")
         sys.exit(0)
 
     print(f"BetterDiscordAutoInstaller v{config.BDAI_SCRIPT_VERSION} (startup_manager)")
@@ -23,7 +19,9 @@ def main():
     uv_target = os.path.join(os.path.dirname(sys.executable), "bdai-headless.exe")
     if getattr(sys, "frozen", False):
         link_working_directory = os.path.dirname(sys.executable)
-        link_working_directory = os.path.split(link_working_directory)[0]  # a/b/c/ -> a/b/
+        link_working_directory = os.path.split(link_working_directory)[
+            0
+        ]  # a/b/c/ -> a/b/
         link_target = os.path.join(link_working_directory, "updater.exe")
         link_arguments = "--run"
     elif os.path.isfile(uv_target):
@@ -33,17 +31,12 @@ def main():
         link_arguments = ""
     link_path = os.path.join(
         os.getenv("appdata"),
-        r"Microsoft\Windows\Start Menu\Programs\Startup\BetterDiscordAutoInstaller.lnk"
+        r"Microsoft\Windows\Start Menu\Programs\Startup\BetterDiscordAutoInstaller.lnk",
     )
 
     while True:
         command = input(
-            "\n"
-            "[0] -- Exit\n"
-            "[1] -- Add to startup\n"
-            "[2] -- Remove from startup\n"
-            "\n"
-            "> "
+            "\n[0] -- Exit\n[1] -- Add to startup\n[2] -- Remove from startup\n\n> "
         )
         print()
 
@@ -57,12 +50,18 @@ def main():
                 link.TargetPath = link_target
                 link.Arguments = link_arguments
                 link.WorkingDirectory = link_working_directory
-                link.Description = f"BetterDiscordAutoInstaller v{config.BDAI_SCRIPT_VERSION}"
+                link.Description = (
+                    f"BetterDiscordAutoInstaller v{config.BDAI_SCRIPT_VERSION}"
+                )
                 link.save()
-                print(".lnk file of the BetterDiscordAutoInstaller was added to startup.")
+                print(
+                    ".lnk file of the BetterDiscordAutoInstaller was added to startup."
+                )
 
             except PermissionError:
-                print("Permission denied. Please run the script with administrator privileges.")
+                print(
+                    "Permission denied. Please run the script with administrator privileges."
+                )
             except Exception as e:
                 print(f"An error occurred while adding the shortcut: {e}")
         elif command == "2":
