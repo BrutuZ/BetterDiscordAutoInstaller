@@ -125,15 +125,13 @@ def main():
                 logger.info("")
                 logger.info(f"Restarting {discord_edition}...")
                 utils.start_discord(discord_edition, discord_parent_path)
-
-            plugins_list = [plugins.PluginInfo.from_url(plugin) for plugin in config.INSTALL_PLUGINS]
-
-            logger.info("")
-            for plugin_info in plugins_list:
-                logger.info(f"Installing {plugin_info.get_name()} plugin...")
-                plugins.download_plugin(plugin_info)
         else:
             logger.info(f"BetterDiscord {bd_release_tag} ({discord_edition}) is up to date and injected. No action needed.")
+
+        plugins_list = [plugins.PluginInfo.from_url(plugin) for plugin in config.INSTALL_PLUGINS]
+        for plugin_info in plugins_list:
+            logger.info(f"Checking plugin {plugin_info.get_name()} ...")
+            plugins.download_plugin(plugin_info)
         logger.info("")
 
     config.dump_settings()
