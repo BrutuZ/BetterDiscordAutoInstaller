@@ -46,8 +46,12 @@ def download_plugin(plugin_info: PluginInfo):
                 lines.append(line)
                 if remote_version == "0":
                     remote_version = read_plugin_version(line.decode("utf-8"))
+                elif remote_version == installed_version:
+                    logger.info("... Already up to date")
+                    response.close()
+                    return None
                 elif not is_version_greater(remote_version, installed_version):
-                    logger.info(f"... Installed version (v{installed_version}) isn't newer than remote (v{remote_version})")
+                    logger.info(f"... Installed version (v{installed_version}) isn't older than remote (v{remote_version})")
                     response.close()
                     return None
 
